@@ -15,7 +15,7 @@ dependencies:
   path: 1.8.2
 
   ansicolor: 2.0.1
-  http: 0.13.4
+  http: 0.13.5
 
 dev_dependencies:
   flutter_test:
