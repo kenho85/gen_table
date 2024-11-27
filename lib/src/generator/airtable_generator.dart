@@ -16,19 +16,18 @@ class AirTableGenerator implements PlatformGenerator {
     Map<String, String> headers = {};
     headers['Authorization'] = 'Bearer ${config.apiKey}';
 
-
     var offset;
     bool isError = false;
 
     JsonBuilder jsonBuilder = JsonBuilder();
 
     do{
-      var offsetParama = '';
+      String offsetParam = '';
       if(offset != null){
-        offsetParama = '?offset=${offset}';
+        offsetParam = '?offset=$offset';
       }
 
-      var url = Uri.parse('${config.input}${offsetParama}');
+      var url = Uri.parse('${config.input}$offsetParam');
       var response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
@@ -37,7 +36,7 @@ class AirTableGenerator implements PlatformGenerator {
         offset = jsonResponse['offset'];
         List<dynamic> records = jsonResponse['records'];
 
-        if (records.length > 0){
+        if (records.isNotEmpty){
           if(!jsonBuilder.isInitialized()){
             bool isSuccess = jsonBuilder.initialize(extractHeaderList(records[1]));
             if(!isSuccess){
