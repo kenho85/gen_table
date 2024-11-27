@@ -27,11 +27,11 @@ class AirTableGenerator implements PlatformGenerator {
         offsetParam = '?offset=$offset';
       }
 
-      var url = Uri.parse('${config.input}$offsetParam');
-      var response = await http.get(url, headers: headers);
+      final url = Uri.parse('${config.input}$offsetParam');
+      final response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
+        var jsonResponse = jsonDecode(escapeSpecialCharacters(response.body));
 
         offset = jsonResponse['offset'];
         List<dynamic> records = jsonResponse['records'];
@@ -46,7 +46,7 @@ class AirTableGenerator implements PlatformGenerator {
             }
           }
           processRecords(jsonBuilder, records);
-          sleep(Duration(milliseconds: 220)); // Rate Limit : 5 request per second
+          sleep(const Duration(milliseconds: 220)); // Rate Limit : 5 request per second
         }
       }
       else {
@@ -62,6 +62,10 @@ class AirTableGenerator implements PlatformGenerator {
       jsonBuilder.generateFiles(config.outputDir!);
       printInfo('Success to generate files');
     }
+  }
+
+  String escapeSpecialCharacters(String content) {
+    return content.replaceAll(r"\\n", r"\n");
   }
 
   @override
